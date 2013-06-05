@@ -7,7 +7,7 @@ var Ship = cc.Sprite.extend({
   _banking: 'neut',
   _x:0,
   _y:0,
-  _rotSpeed: 4,
+  _rotSpeed: 6,
   _viewport:null,
   _gasAnim:null,
 
