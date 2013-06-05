@@ -7,6 +7,7 @@ var Ship = cc.Sprite.extend({
   _banking: 'neut',
   _x:0,
   _y:0,
+  _rotSpeed: 4,
   _viewport:null,
   _gasAnim:null,
 
@@ -38,6 +39,7 @@ var Ship = cc.Sprite.extend({
         this._gas = true
         this.runAction(this._gasAnim[this._banking])
         console.log("gas on")
+        console.log("vector", this._rot)
       }
     }
     else{
@@ -52,11 +54,11 @@ var Ship = cc.Sprite.extend({
     
     bank = null
     if(this._keystate[cc.KEY.left]){
-      this._rot = this._rot - 2
+      this._rot = this._rot - this._rotSpeed
       bank = 'left'
     }
     else if(this._keystate[cc.KEY.right]){
-      this._rot = this._rot + 2
+      this._rot = this._rot + this._rotSpeed
       bank = 'right'
     }
     else{
@@ -76,8 +78,11 @@ var Ship = cc.Sprite.extend({
     }
 
 
-    if(this._rot > 360 || this._rot < -360){
+    if(this._rot > 360){
+      console.log(this._rot);
       this._rot = 0
+    }else if(this._rot < 0){
+      this._rot = 360
     }
     this.setRotation(this._rot)
 
@@ -109,7 +114,7 @@ var ShipLayer = cc.Layer.extend({
             , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
 
         var screenSize = cc.Director.getInstance().getWinSize();
-        this.world = new b2World(new b2Vec2(0, -10), true);
+        this.world = new b2World(new b2Vec2(0, -9.8), true);
         this.world.SetContinuousPhysics(true);
         var fixDef = new b2FixtureDef;
         fixDef.density = 1.0;
@@ -169,6 +174,7 @@ var ShipLayer = cc.Layer.extend({
     bodyDef.type = b2Body.b2_dynamicBody;
     bodyDef.position.Set(p.x / PTM_RATIO, p.y / PTM_RATIO);
     bodyDef.userData = sprite;
+    bodyDef.linearDamping = 0.5
     var body = this.world.CreateBody(bodyDef);
 
     // Define another box shape for our dynamic body.
@@ -195,9 +201,10 @@ var ShipLayer = cc.Layer.extend({
   update: function(dt){
     //arrange
     if(this._ship._gas){
+      var gaspower = 20
       var b2Vec2 = Box2D.Common.Math.b2Vec2
-      var rot = this._ship._rot
-      this._shipBody.ApplyForce(new b2Vec2(rot, 15), this._shipBody.GetWorldCenter())
+      var rot = cc.DEGREES_TO_RADIANS(this._ship._rot)
+      this._shipBody.ApplyForce(new b2Vec2(Math.sin(rot)*gaspower, Math.cos(rot)*gaspower), this._shipBody.GetWorldCenter())
     }
 
 
