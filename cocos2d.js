@@ -38,6 +38,9 @@
         //SingleEngineFile:'',
         appFiles:[
             'src/resource.js',
+            'src/phys_layer.js',
+            'src/phys_sprite.js',
+            'src/ship.js',
             'src/ship_layer.js',
             'src/myApp.js'//add your own files in order here
         ]
