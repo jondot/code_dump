@@ -55,7 +55,7 @@
         },
         setPosition:function (p) {
             var angle = this._body.GetAngle();
-            this._body.SetTransform(new Box2D.Common.Math.b2Vec2(p.x / this._PTMRatio, p.y / this._PTMRatio), angle);
+            this._body.setTransform(Box2D.b2Vec2(p.x / this._PTMRatio, p.y / this._PTMRatio), angle);
             this.setNodeDirty();
         },
         getRotation:function () {
@@ -212,7 +212,7 @@
            return !this._body.isSleeping();
         }
     };
-    cc.PhysicsSprite = cc.Sprite.extend(box2dAPI);
+    cc.PhysicsSprite = cc.Sprite.extend(chipmunkAPI);
 
     /**
      * Create a PhysicsSprite with filename and rect

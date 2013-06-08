@@ -43,6 +43,7 @@ ShipScene = cc.Scene.extend({
   onEnter: function(){
     this._super();
     var layer = new ShipLayer
+    //layer.setDebug(true)
     layer.init()
     this.addChild(layer)
   }

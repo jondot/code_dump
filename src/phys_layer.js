@@ -5,6 +5,7 @@ var PhysLayer = cc.Layer.extend({
   _velocityIterations: 8,
   _positionIterations: 1,
   _world: null,
+  _debug:false,
 
   init:function(){
     var b2Vec2 = Box2D.Common.Math.b2Vec2
@@ -13,6 +14,11 @@ var PhysLayer = cc.Layer.extend({
     this._world.SetContinuousPhysics(true);
 
     this.setupWorld()
+  },
+
+  setDebug: function(val){
+    console.log("Layer in DEBUG", this);
+    this._debug = val;
   },
 
   getWorld:function(){
@@ -26,7 +32,8 @@ var PhysLayer = cc.Layer.extend({
           , b2BodyDef = Box2D.Dynamics.b2BodyDef
           , b2Body = Box2D.Dynamics.b2Body
         , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-        , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+        , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+        , b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 
     var screenSize = cc.Director.getInstance().getWinSize();
     var fixDef = new b2FixtureDef;
@@ -54,6 +61,17 @@ var PhysLayer = cc.Layer.extend({
     // right
     bodyDef.position.Set(26.8, 13);
     this._world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+    if(this._debug){
+      cc.log(cc.renderContext)
+      var debugDraw = new b2DebugDraw
+          debugDraw.SetSprite(cc.renderContext)
+          debugDraw.SetDrawScale(PTM_RATIO)
+          debugDraw.SetFillAlpha(0.3)
+          debugDraw.SetLineThickness(1.0)
+          debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit | b2DebugDraw.e_centerOfMassBit)
+      this._world.SetDebugDraw(debugDraw)
+    }
   },
 
   addPhysicsChild: function(obj){
@@ -73,6 +91,10 @@ var PhysLayer = cc.Layer.extend({
     }
 
     this._world.ClearForces()
+
+    if(this._debug){
+      this._world.DrawDebugData()
+    }  
   }
 
 })
